@@ -1,11 +1,24 @@
 version: "2"
+# at the parent level, we define the names of our services
 services:
   es:
+    #describe image required
     image: elasticsearch:2.3
   web:
-    image: prakhar1989/foodtrucks-web
+    image: caseydailey/foodtrucks-web
+
+    # specify command and ports to run
     command: python app.py
     ports:
       - "5000:5000"
+    # this optional parametn specifies a mount point in our web container
+    # where the code will reside. this is useful if you need access to logs, etc
     volumes:
       - .:/code
+
+# note: you must be inside the directory with the docke-compose.yml file in order 
+# to execute most Compose commands
+
+# these few line of configuration allow us to run one command and have these containers running together on port 5000 just like that:
+# just... ``` docker-compose up ```
+

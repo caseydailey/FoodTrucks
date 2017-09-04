@@ -45,9 +45,10 @@ CMD [ "python", "./app.py" ]
 # to do this, need to know the ip for the elastic search container:
 
 # ``` docker network inspect bridge ```
+
 # now we can see which IP the elastic search container has been alloted, then we can run the food-trucks container and curl this IP:
 
-# ``` docker run -it --rm prakhar1989/foodtrucks-web ```
+# ``` docker run -it --rm caseydailey/foodtrucks-web ```
 
 # after getting "curl" with:
 
