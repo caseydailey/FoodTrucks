@@ -1,12 +1,15 @@
 es:
+  # we go rid of the version on elasticsearch
   image: elasticsearch
+  # we're specifying limits on memory and processor needs for the application
   cpu_shares: 100
   mem_limit: 262144000
 web:
-  image: prakhar1989/foodtrucks-web
+  image: caseydailey/foodtrucks-web
   cpu_shares: 100
   mem_limit: 262144000
   ports:
     - "80:5000"
   links:
     - es
+
