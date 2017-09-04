@@ -35,4 +35,69 @@ EXPOSE 5000
 # start app
 CMD [ "python", "./app.py" ]
 
-# now we can build the image and run the container
+# now we can build the image and run the container with:
+# ``` docker build -t caseydailey/foodtrucks-web . ```
+
+#### note ###
+
+# while this build the flask-app ocntainer, we are not able to connect to the elastic-search container until we network them.
+
+# to do this, need to know the ip for the elastic search container:
+
+# ``` docker network inspect bridge ```
+# now we can see which IP the elastic search container has been alloted, then we can run the food-trucks container and curl this IP:
+
+# ``` docker run -it --rm prakhar1989/foodtrucks-web ```
+
+# after getting "curl" with:
+
+# ``` apt-get -yqq install curl ```
+
+# now we can:
+
+# ``` curl 172.17.0.2:9200 ``` 
+
+# apparently this is a work around. while the containers can now talk to each other, using the default 'bridge' network is not secure and we don't want to have to come back and cofigure the /etc/hosts file everytime the IP for es changes
+
+# do we're goin to have to create our own network:
+
+#  ``` docker network create foodtrucks ```
+
+# this creates a new 'bridge network'
+# now stop the elastic search container:
+
+# ```  docker stop 6be7d3b42e7b ``` (the id of the elasticsearch container)
+
+#then we can run: 
+
+# ``` docker run -dp 9200:9200 --net foodtrucks --name es elasticsearch ```
+
+# this does the same thing as earlier but this time we gave our ES container a name 'es' 
+
+# and when we run:
+# ``` docker run -it --rm --net foodtrucks prakhar1989/foodtrucks-web bash ```
+
+# we can ```curl es:9200``` and talk to our es container from the flask app.
+
+# now we can run it for real:
+
+# ``` docker run -d --net foodtrucks -p 5000:5000 --name foodtrucks-web caseydailey/foodtrucks-web ```
+
+# and when we docker ps we see both running!
+
+to re-cap: this is all it took, commands-wise to get running:
+
+#!/bin/bash
+
+# build the flask container
+# ```docker build -t caseydailey/foodtrucks-web .```
+
+# create the network
+# ```docker network create foodtrucks```
+
+# start the ES container
+```docker run -d --net foodtrucks -p 9200:9200 -p 9300:9300 --name # ```es elasticsearch
+
+# start the flask app container
+```docker run -d --net foodtrucks -p 5000:5000 --name # ```foodtrucks-web caseydailey/foodtrucks-web
+
